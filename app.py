@@ -34,3 +34,7 @@ def hello():
     # if the secret already exists in the Key Vault, then a new version of the secret is created.
     secret = azure_kv.get_secret("PruebaXXXX1234")
     return app.jsonify(**secret)
+
+@app.route("/index")
+def index():
+    return app.jsonify({"status", "ok"}), 200
