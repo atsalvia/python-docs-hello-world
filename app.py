@@ -1,7 +1,7 @@
 from azure.keyvault.secrets import SecretClient
 from azure.identity import ClientSecretCredential
 
-from flask import Flask
+from flask import Flask, jsonify
 app = Flask(__name__)
 
 sp_secrets = {
@@ -26,15 +26,18 @@ class AzureServicePrincipal():
             credential = credentials
         )
 
+    def get_secret(self, key):
+        return self.client.get_secret(key)
+
 
 @app.route("/")
-def hello():
+def main():
     azure_kv = AzureServicePrincipal()
     # Let's create a secret holding bank account credentials valid for 1 year.
     # if the secret already exists in the Key Vault, then a new version of the secret is created.
     secret = azure_kv.get_secret("PruebaXXXX1234")
-    return app.jsonify(**secret)
+    return jsonify({"secret": secret.value}), 200
 
-@app.route("/index")
+@app.route("/ping")
 def index():
-    return app.jsonify({"status", "ok"}), 200
+    return jsonify({"status": "ok"}), 200
